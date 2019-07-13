@@ -55,7 +55,7 @@ class Logo_By_Conditions {
 
 	## Settings page
 	public function logo_settings_page() {
-		if ( isset( $_POST ) ) {
+		if ( $_POST ) {
 			if ( ! isset( $_POST['logo_by_conditions'] ) || ! wp_verify_nonce( $_POST['logo_by_conditions'], 'logo_by_conditions' ) ) {
 				wp_die( esc_html_e( 'Something went wrong...', 'logo_by_conditions' ) );
 			} else {

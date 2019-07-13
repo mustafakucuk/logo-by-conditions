@@ -55,9 +55,9 @@ class Logo_By_Conditions {
 
 	## Settings page
 	public function logo_settings_page() {
-		if ( $_POST ) {
+		if ( isset( $_POST ) ) {
 			if ( ! isset( $_POST['logo_by_conditions'] ) || ! wp_verify_nonce( $_POST['logo_by_conditions'], 'logo_by_conditions' ) ) {
-				wp_die( __( 'Something went wrong...', 'logo_by_conditions' ) );
+				wp_die( esc_html_e( 'Something went wrong...', 'logo_by_conditions' ) );
 			} else {
 				$auto_changer = ! empty( $_POST['auto_changer'] ) ? intval( $_POST['auto_changer'] ) : 0;
 				update_option( 'default_logo', sanitize_text_field( $_POST['default_logo'] ) );
@@ -72,18 +72,18 @@ class Logo_By_Conditions {
 	## Logo settings field for category add page
 	public function category_add_form_fields() {        ?>
 			<div class="form-field">
-				<label for="logo_term_meta[logo]"><?php _e( 'Logo', 'logo_by_conditions' ); ?></label>
+				<label for="logo_term_meta[logo]"><?php esc_html_e( 'Logo', 'logo_by_conditions' ); ?></label>
 				<input type="text" class="mk-upload" name="logo_term_meta[logo]" id="logo_term_meta[logo]" value="">
-				<p class="description"><?php _e( 'Custom logo for this category.', 'logo_by_conditions' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Custom logo for this category.', 'logo_by_conditions' ); ?></p>
 			</div>
 			<div class="form-field">
 				<label for="logo_term_meta[only_category]">
 					<input type="radio" name="logo_term_meta[show_type]" value="1" id="logo_term_meta[only_category]">
-					<?php _e( 'Only category', 'logo_by_conditions' ); ?>
+					<?php esc_html_e( 'Only category', 'logo_by_conditions' ); ?>
 				</label>
 				<label for="logo_term_meta[all_posts]">
 					<input type="radio" name="logo_term_meta[show_type]" value="2" id="logo_term_meta[all_posts]">
-					<?php _e( 'All posts of this category', 'logo_by_conditions' ); ?>
+					<?php esc_html_e( 'All posts of this category', 'logo_by_conditions' ); ?>
 				</label>
 			</div>
 		<?php
@@ -96,24 +96,24 @@ class Logo_By_Conditions {
 		$show_type = intval( get_term_meta( $term_id, 'show_type', true ) );
 		?>
 			<tr class="form-field">
-				<th scope="row" valign="top"><label for="logo_term_meta[logo]"><?php _e( 'Logo', 'logo_by_conditions' ); ?></label></th>
+				<th scope="row" valign="top"><label for="logo_term_meta[logo]"><?php esc_html_e( 'Logo', 'logo_by_conditions' ); ?></label></th>
 				<td>
-					<input type="text" class="mk-upload" name="logo_term_meta[logo]" id="logo_term_meta[logo]" value="<?php echo $logo; ?>">
-					<p class="description"><?php _e( 'Custom logo for this category.', 'logo_by_conditions' ); ?></p>
+					<input type="text" class="mk-upload" name="logo_term_meta[logo]" id="logo_term_meta[logo]" value="<?php esc_url( $logo ); ?>">
+					<p class="description"><?php esc_html_e( 'Custom logo for this category.', 'logo_by_conditions' ); ?></p>
 				</td>
 			</tr>
 			<tr class="form-field">
 				<th scope="row" valign="top">
 					<label for="logo_term_meta[only_category]">
-						<input type="radio" name="logo_term_meta[show_type]" value="1" id="logo_term_meta[only_category]" <?php echo ! $show_type || $show_type == 1 ? 'checked' : ''; ?>>
-						<?php _e( 'Show only category', 'logo_by_conditions' ); ?>
+						<input type="radio" name="logo_term_meta[show_type]" value="1" id="logo_term_meta[only_category]" <?php esc_html_e( ! $show_type || $show_type === 1 ? 'checked' : '' ); ?>>
+						<?php esc_html_e( 'Show only category', 'logo_by_conditions' ); ?>
 					</label>
 				</th>
 
 				<th scope="row" valign="top">
 					<label for="logo_term_meta[all_posts]">
-						<input type="radio" name="logo_term_meta[show_type]" value="2" id="logo_term_meta[all_posts]" <?php echo $show_type == 2 ? 'checked' : ''; ?>>
-						<?php _e( 'Show all posts of this category', 'logo_by_conditions' ); ?>
+						<input type="radio" name="logo_term_meta[show_type]" value="2" id="logo_term_meta[all_posts]" <?php esc_html_e( $show_type === 2 ? 'checked' : '' ); ?>>
+						<?php esc_html_e( 'Show all posts of this category', 'logo_by_conditions' ); ?>
 					</label>
 				</th>
 			</tr>
@@ -122,7 +122,7 @@ class Logo_By_Conditions {
 
 	## Save fields
 	public function save_category_form_fields( $term_id ) {
-		 $fields = $_POST['logo_term_meta'];
+		$fields = esc_html( $_POST['logo_term_meta'] );
 		foreach ( $fields as $key => $value ) {
 			$value = sanitize_text_field( $value );
 			update_term_meta( $term_id, $key, $value );
@@ -142,8 +142,8 @@ class Logo_By_Conditions {
 		wp_nonce_field( 'logo_update', 'logo_update' );
 		$logo_url = esc_url( get_post_meta( $post->ID, 'logo', true ) );
 		?>
-			<label for="logo"><?php _e( 'Logo', 'logo_by_conditions' ); ?></label>
-			<input type="text" class="mk-upload" name="logo" id="logo" value="<?php echo $logo_url; ?>">
+			<label for="logo"><?php esc_html_e( 'Logo', 'logo_by_conditions' ); ?></label>
+			<input type="text" class="mk-upload" name="logo" id="logo" value="<?php echo esc_html_e( $logo_url ); ?>">
 		<?php
 	}
 
@@ -172,7 +172,7 @@ class Logo_By_Conditions {
 
 	## Return logo of category
 	public function category_logo( $term_id ) {
-		 return get_term_meta( $term_id, 'logo', true );
+		return get_term_meta( $term_id, 'logo', true );
 	}
 
 	## Return url of logo by conditions
@@ -186,7 +186,7 @@ class Logo_By_Conditions {
 			if ( empty( $logo ) && ! is_page() ) {
 				$term_id   = get_the_category( $post_id )[0]->term_id;
 				$show_type = get_term_meta( $term_id, 'show_type', true );
-				if ( $show_type == 2 ) {
+				if ( $show_type === 2 ) {
 					$logo = $this->category_logo( $term_id );
 				}
 			}
